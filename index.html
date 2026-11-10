@@ -25,6 +25,11 @@ ul{padding-left:20px}
 .ask h2{color:#ffa94d;border:0}
 .note{font-size:.9rem;color:#555;border-left:4px solid var(--c);padding-left:12px}
 footer{text-align:center;padding:30px;color:#666;font-size:.9rem}
+
+#bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#1d2b3a;color:#fff;padding:10px 14px;z-index:9;text-align:center;font-size:.9rem}
+#bar button{margin:4px;padding:8px 14px;border:0;border-radius:8px;font-weight:700;cursor:pointer;background:#e8590c;color:#fff}
+body.edit #bar{display:block}
+body.edit [contenteditable]{outline:2px dashed #e8590c44;outline-offset:3px}
 </style>
 </head>
 <body>
@@ -91,5 +96,26 @@ footer{text-align:center;padding:30px;color:#666;font-size:.9rem}
 </section>
 
 <footer>Proposta feta per un grup de nens i nenes que volen animar des de la grada del pavelló Sas.</footer>
+<div id="bar" contenteditable="false">✏️ Mode edició: fes clic a qualsevol text i canvia'l. Els canvis NOMÉS es veuen al teu navegador fins que els publiquis.<br>
+<button onclick="dl()">Descarrega la pàgina editada</button><button onclick="localStorage.removeItem('sasEdit');location.href=location.pathname+'?edita'">Desfés els canvis</button></div>
+<script>
+(function(){
+var ed=/[?&]edita/.test(location.search),K='sasEdit';
+if(!ed)return;
+document.body.classList.add('edit');
+var els=document.querySelectorAll('h1,h2,h3,p,li,.badge,footer,nav a');
+var saved=localStorage.getItem(K);
+if(saved){try{var a=JSON.parse(saved);els.forEach(function(e,i){if(a[i]!=null)e.innerHTML=a[i]})}catch(x){}}
+els.forEach(function(e){e.setAttribute('contenteditable','true')});
+document.addEventListener('input',function(){localStorage.setItem(K,JSON.stringify(Array.prototype.map.call(els,function(e){return e.innerHTML})))});
+window.dl=function(){
+var c=document.documentElement.cloneNode(true);
+c.querySelectorAll('[contenteditable]').forEach(function(e){e.removeAttribute('contenteditable')});
+c.querySelector('body').className='';
+var h='<!DOCTYPE html>\n'+c.outerHTML;
+var b=new Blob([h],{type:'text/html'}),l=document.createElement('a');
+l.href=URL.createObjectURL(b);l.download='index.html';l.click();};
+})();
+</script>
 </body>
 </html>
