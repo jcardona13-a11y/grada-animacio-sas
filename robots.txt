@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jcardona13-a11y.github.io/grada-animacio-sas/sitemap.xml
