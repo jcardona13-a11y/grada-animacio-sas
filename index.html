@@ -38,6 +38,11 @@ footer{text-align:center;padding:30px;color:#666;font-size:.9rem}
 #bar button{margin:4px;padding:8px 14px;border:0;border-radius:8px;font-weight:700;cursor:pointer;background:#e8590c;color:#fff}
 body.edit #bar{display:block}
 body.edit [contenteditable]{outline:2px dashed #e8590c44;outline-offset:3px}
+
+.chant-card{background:var(--l);border-radius:16px;padding:24px}
+.chant-card audio{display:block;width:100%;margin:18px 0 12px}
+.chant-lines{font-size:1.25rem;font-weight:650;line-height:1.8;margin:0 0 18px}
+.chant-card a{color:var(--d);font-weight:600}
 </style>
 </head>
 <body>
@@ -103,6 +108,18 @@ body.edit [contenteditable]{outline:2px dashed #e8590c44;outline-offset:3px}
 </div>
 </section>
 
+<section id="cantic" aria-labelledby="cantic-titol">
+<h2 id="cantic-titol">El nostre càntic</h2>
+<div class="chant-card">
+<p class="chant-lines">Som la grada, som la veu.<br>Aquest pavelló és casa nostra.</p>
+<audio controls preload="metadata" aria-label="Escolta el càntic de la grada del SAS">
+<source src="1-cantic-sas-millorat.m4a" type="audio/mp4">
+El teu navegador no pot reproduir aquest àudio. Pots descarregar-lo a l'enllaç de sota.
+</audio>
+<a href="1-cantic-sas-millorat.m4a" download>Descarrega el càntic</a>
+</div>
+</section>
+
 <section id="apunta">
 <h2>Apunta-t'hi</h2>
 <p>Vols formar part de la grada d'animació? Omple l'enquesta. Abans d'apuntar-te, demana-ho a un adult de casa.</p>
@@ -112,13 +129,16 @@ body.edit [contenteditable]{outline:2px dashed #e8590c44;outline-offset:3px}
 
 <footer>Proposta feta per un grup de nens i nenes que volen animar des de la grada del pavelló Sas.</footer>
 <div id="bar" contenteditable="false">✏️ Mode edició: fes clic a qualsevol text i canvia'l. Els canvis NOMÉS es veuen al teu navegador fins que els publiquis.<br>
-<button onclick="dl()">Descarrega la pàgina editada</button><button onclick="localStorage.removeItem('sasEdit');location.href=location.pathname+'?edita'">Desfés els canvis</button></div>
+<button onclick="dl()">Descarrega la pàgina editada</button><button onclick="localStorage.removeItem('sasEdit');localStorage.removeItem('sasChantEdit');location.href=location.pathname+'?edita'">Desfés els canvis</button></div>
 <script>
 (function(){
 var ed=/[?&]edita/.test(location.search),K='sasEdit';
 if(!ed)return;
 document.body.classList.add('edit');
-var els=document.querySelectorAll('h1,h2,h3,p,li,.badge,footer,nav a');
+var els=Array.prototype.filter.call(document.querySelectorAll('h1,h2,h3,p,li,.badge,footer,nav a'),function(e){return !e.closest('#cantic')});
+var chant=document.querySelectorAll('#cantic h2,#cantic p'),CK='sasChantEdit';
+try{var cs=JSON.parse(localStorage.getItem(CK)||'[]');chant.forEach(function(e,i){if(cs[i]!=null)e.innerHTML=cs[i];e.setAttribute('contenteditable','true')})}catch(x){}
+document.addEventListener('input',function(){localStorage.setItem(CK,JSON.stringify(Array.prototype.map.call(chant,function(e){return e.innerHTML})))})
 var saved=localStorage.getItem(K);
 if(saved){try{var a=JSON.parse(saved);els.forEach(function(e,i){if(a[i]!=null)e.innerHTML=a[i]})}catch(x){}}
 els.forEach(function(e){e.setAttribute('contenteditable','true')});
